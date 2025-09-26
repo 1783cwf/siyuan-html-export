@@ -2,7 +2,7 @@
   "name": "html-export",
   "author": "Vanessa",
   "url": "https://github.com/siyuan-note/plugin-sample",
-  "version": "0.4.3",
+  "version": "1.0.0",
   "minAppVersion": "3.3.0",
   "backends": [
     "windows",
@@ -26,8 +26,8 @@
     "zh_CN": "HTML导出"
   },
   "description": {
-    "default": "Export notes as HTML files",
-    "zh_CN": "将笔记导出为HTML文件"
+    "default": "Simple and clean HTML export plugin for SiYuan notes",
+    "zh_CN": "简洁易用的思源笔记HTML导出插件"
   },
   "readme": {
     "default": "README.md",
