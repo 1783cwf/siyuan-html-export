@@ -1480,92 +1480,678 @@ export default class PluginSample extends Plugin {
     }
 
     /**
-     * 生成完整的HTML文档
+     * 生成完整的HTML文档（Typora风格）
      */
     private generateFullHTML(content: string, generateTOC: boolean): string {
         const title = this.getDocumentTitle();
         const toc = generateTOC ? this.generateTableOfContents(content) : '';
 
-        return `<!DOCTYPE html>
-<html lang="zh-CN">
+        return `<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-        }
-        .toc-container {
-            width: 250px;
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            padding: 20px;
-            background: #f5f5f5;
-            border-right: 1px solid #ddd;
-        }
-        .content-container {
-            margin-left: 270px;
-            flex: 1;
-            max-width: 800px;
-        }
-        .toc-item {
-            margin: 5px 0;
-            padding: 2px 0;
-        }
-        .toc-item a {
-            text-decoration: none;
-            color: #333;
-        }
-        .toc-item a:hover {
-            color: #007bff;
-        }
-        .toc-level-1 { padding-left: 0; }
-        .toc-level-2 { padding-left: 20px; }
-        .toc-level-3 { padding-left: 40px; }
-        .toc-level-4 { padding-left: 60px; }
-        .toc-level-5 { padding-left: 80px; }
-        .toc-level-6 { padding-left: 100px; }
-        h1, h2, h3, h4, h5, h6 {
-            margin-top: 1.5em;
-            margin-bottom: 0.5em;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-        pre {
-            background: #f8f8f8;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        code {
-            background: #f8f8f8;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>${title}</title>
+<style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top:1rem; margin-bottom:1rem; }
+h1 { font-size:2rem; }
+h2 { font-size:1.8rem; }
+h3 { font-size:1.6rem; }
+h4 { font-size:1.4rem; }
+h5 { font-size:1.2rem; }
+h6 { font-size:1rem; }
+html { font-size:14px; background-color:var(--bg-color); color:var(--text-color); font-family:"Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing:antialiased; }
+body { margin:0px; padding:0px; height:auto; bottom:0px; top:0px; left:0px; right:0px; font-size:1rem; line-height:1.428571; overflow-x:hidden; background:inherit; tab-size:4; }
+iframe { margin:auto; }
+a.url { word-break:break-all; }
+a:active, a:hover { outline:0px; }
+.in-text-selection, ::selection { text-shadow:none; background:var(--select-text-bg-color); color:var(--select-text-font-color); }
+#write { margin:0px auto; height:auto; width:inherit; word-break:normal; overflow-wrap:break-word; position:relative; white-space:normal; overflow-x:visible; padding-top:36px; }
+#write.first-line-indent p { text-indent:2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent:0px; }
+#write.first-line-indent li { margin-left:2em; }
+body.typora-export { padding-left:30px; padding-right:30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space:pre-wrap; }
+.typora-export .task-list-item input { pointer-events:none; }
+@media screen and (max-width: 500px) {
+  body.typora-export { padding-left:0px; padding-right:0px; }
+  #write { padding-left:20px; padding-right:20px; }
+  .CodeMirror-sizer { margin-left:0px !important; }
+  .CodeMirror-gutters { display:none !important; }
+}
+#write li > figure:last-child { margin-bottom:0.5rem; }
+#write ol, #write ul { position:relative; }
+img { max-width:100%; vertical-align:middle; image-orientation:from-image; }
+button, input, select, textarea { color:inherit; font-style:inherit; font-variant-caps:inherit; font-weight:inherit; font-stretch:inherit; font-size:inherit; line-height:inherit; font-family:inherit; font-size-adjust:inherit; font-kerning:inherit; font-variant-alternates:inherit; font-variant-ligatures:inherit; font-variant-numeric:inherit; font-variant-east-asian:inherit; font-variant-position:inherit; font-variant-emoji:inherit; font-feature-settings:inherit; font-optical-sizing:inherit; font-variation-settings:inherit; }
+input[type="checkbox"], input[type="radio"] { line-height:normal; padding:0px; }
+*, ::after, ::before { box-sizing:border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width:inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position:relative; }
+p { line-height:inherit; }
+h1, h2, h3, h4, h5, h6 { break-after:avoid-page; break-inside:avoid; orphans:4; }
+p { orphans:4; }
+.hidden { display:none; }
+.md-blockmeta { color:rgb(204, 204, 204); font-weight:700; font-style:italic; }
+a { cursor:pointer; }
+sup.md-footnote { padding:2px 4px; background-color:rgba(238, 238, 238, 0.7); color:rgb(85, 85, 85); border-radius:4px; cursor:pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color:inherit; text-transform:inherit; text-decoration:inherit; }
+#write input[type="checkbox"] { cursor:pointer; width:inherit; height:inherit; }
+figure { overflow-x:auto; margin:1.2em 0px; max-width:calc(100% + 16px); padding:0px; }
+figure > table { margin:0px; }
+tr { break-inside:avoid; break-after:auto; }
+thead { display:table-header-group; }
+table { border-collapse:collapse; border-spacing:0px; width:100%; overflow:auto; break-inside:auto; text-align:left; }
+table.md-table td { min-width:32px; }
+.CodeMirror-gutters { border-right-width:0px; border-right-style:none; border-right-color:currentcolor; background-color:inherit; }
+.CodeMirror-linenumber { }
+.CodeMirror { text-align:left; }
+.CodeMirror-placeholder { opacity:0.3; }
+.CodeMirror pre { padding:0px 4px; }
+.CodeMirror-lines { padding:0px; }
+div.hr:focus { cursor:none; }
+#write pre { white-space:pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space:pre; }
+#write pre.ty-contain-cm { white-space:normal; }
+.CodeMirror-gutters { margin-right:4px; }
+.md-fences { font-size:0.9rem; display:block; break-inside:avoid; text-align:left; overflow:visible; white-space:pre; background:inherit; position:relative !important; }
+.md-fences-adv-panel { width:100%; margin-top:10px; text-align:center; padding-top:0px; padding-bottom:8px; overflow-x:auto; }
+#write .md-fences.mock-cm { white-space:pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left:0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space:pre; overflow-x:auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left:8px; }
+.CodeMirror-line, twitterwidget { break-inside:avoid; }
+.footnotes { opacity:0.8; font-size:0.9rem; margin-top:1em; margin-bottom:1em; }
+.footnotes + .footnotes { margin-top:0px; }
+.md-reset { margin:0px; padding:0px; border:0px; outline:0px; vertical-align:top; background:0px 0px; text-decoration:none; text-shadow:none; float:none; position:static; width:auto; height:auto; white-space:nowrap; cursor:inherit; line-height:normal; font-weight:400; text-align:left; box-sizing:content-box; direction:ltr; }
+li div { padding-top:0px; }
+blockquote { margin:1rem 0px; }
+li .mathjax-block, li p { margin:0.5rem 0px; }
+li blockquote { margin:1rem 0px; }
+li { margin:0px; position:relative; }
+blockquote > :last-child { margin-bottom:0px; }
+blockquote > :first-child, li > :first-child { margin-top:0px; }
+.footnotes-area { color:rgb(136, 136, 136); margin-top:0.714rem; padding-bottom:0.143rem; white-space:normal; }
+#write .footnote-line { white-space:pre-wrap; }
+@media print {
+  body, html { border:1px solid transparent; height:99%; break-after:avoid; break-before:avoid; font-variant-ligatures:no-common-ligatures; }
+  #write { margin-top:0px; padding-top:0px; border-color:transparent !important; }
+  .typora-export * { print-color-adjust:exact; }
+  .typora-export #write { break-after:avoid; }
+  .typora-export #write::after { height:0px; }
+  .is-mac table { break-inside:avoid; }
+  .typora-export-show-outline .typora-export-sidebar { display:none; }
+}
+.footnote-line { margin-top:0.714em; font-size:0.7em; }
+a img, img a { cursor:pointer; }
+pre.md-meta-block { font-size:0.8rem; min-height:0.8rem; white-space:pre-wrap; background:rgb(204, 204, 204); display:block; overflow-x:hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display:block; margin:auto; }
+p > .md-image:only-child { display:inline-block; width:100%; }
+#write .md-math-block { margin-top:0.5rem; margin-bottom:0.5rem; }
+#write .md-math-block:not(:first-child):not(:last-child):not(:only-child) { display:flex; align-items:center; }
+.md-math-block .MathJax { margin:0px auto; }
+.md-math-block .MathJax > * { display:inline-block; }
+.md-math-block .MathJax_SVG { display:inline !important; }
+.md-math-block .MathJax > svg { overflow:visible; min-width:100% !important; min-height:1px !important; max-width:900%; max-height:100000px; }
+.md-math-block .MathJax_display { margin:0px auto; text-align:center; }
+.md-math-block .MathJax_SVG_Display { text-align:center; margin:1em auto; position:relative; }
+.md-math-block .MathJax_SVG_Display > svg { position:relative; min-width:100% !important; }
+.md-rawblock { margin-top:0.5rem; margin-bottom:0.5rem; }
+.md-rawblock > .md-rawblock-tooltip { position:relative; display:inline-block; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-tooltip-backmatter { display:none; }
+.md-rawblock > .md-rawblock-tooltip:active > .md-rawblock-tooltip-backmatter { display:block; padding:4px 8px; background:rgba(0, 0, 0, 0.75); color:white; border-radius:4px; position:absolute; top:100%; left:0; z-index:1; font-size:0.875em; white-space:nowrap; }
+.md-rawblock > .md-rawblock-tooltip:active > .md-rawblock-tooltip-backmatter > a { color:white; text-decoration:underline; }
+.md-rawblock > .md-rawblock-tooltip:active { pointer-events:none; }
+.md-rawblock > .md-rawblock-tooltip:hover > .md-rawblock-tooltip-backmatter { display:block; padding:4px 8px; background:rgba(0, 0, 0, 0.75); color:white; border-radius:4px; position:absolute; top:100%; left:0; z-index:1; font-size:0.875em; white-space:nowrap; }
+.md-rawblock > .md-rawblock-tooltip:hover > .md-rawblock-tooltip-backmatter > a { color:white; text-decoration:underline; }
+.md-rawblock > .md-rawblock-tooltip:hover { pointer-events:none; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-input { font-family:monospace; background:inherit; border:0px; color:inherit; padding:0px; margin:0px; width:100%; outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-input:focus { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon { font-family:monospace; background:inherit; color:inherit; padding:0px; margin:0px; width:100%; text-align:right; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:hover { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:focus { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:hover + .md-rawblock-input { background:rgba(0, 0, 0, 0.07); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-input:focus + .md-rawblock-icon { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-input:focus + .md-rawblock-icon:hover { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-input:focus + .md-rawblock-icon:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-input:active + .md-rawblock-icon { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-input:active + .md-rawblock-icon:hover { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-input:active + .md-rawblock-icon:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input { background:rgba(0, 0, 0, 0.07); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input { background:rgba(0, 0, 0, 0.07); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus { background:rgba(0, 0, 0, 0.07); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active { background:rgba(0, 0, 0, 0.07); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:hover { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:hover { color:var(--text-color); }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:hover:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:hover:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:hover:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:hover:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active:hover:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active:hover:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active:active:hover:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active:active:hover:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active:active:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active:active:active:hover { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:focus + .md-rawblock-icon:active:active:active:active:active:active { outline:0px; }
+.md-rawblock > .md-rawblock-tooltip > .md-rawblock-icon:active + .md-rawblock-input:active + .md-rawblock-icon:active:active:active:active:active:active { outline:0px; }
+#write .md-fences.md-fences-with-lineno { padding-left:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno { padding-left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-linenumber { padding-left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-gutters { border-right-width:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-gutter-wrapper { left:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-gutter-elt { left:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-guttermarker-subtle { left:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-guttermarker { left:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-linenumber { left:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-lines { padding-left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-measure { padding-left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-sizer { padding-left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-vscrollbar { left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-hscrollbar { bottom:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-scrollbar-filler { left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-gutter-filler { left:0px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-scroll { padding-left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursor { left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors .CodeMirror-cursor { left:8px; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-selected { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-focused .CodeMirror-selected { background:rgba(181, 214, 252, 0.37); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line::selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span::selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span > span::selection { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line::-moz-selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span::-moz-selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span > span::-moz-selection { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors { visibility:hidden; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursor { visibility:visible; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors .CodeMirror-cursor { visibility:visible; }
+#write .md-fences.mock-cm.md-fences-with-lineno { background:rgb(248, 248, 248); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-gutters { background:rgb(248, 248, 248); border-right:1px solid rgb(221, 221, 221); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-linenumber { color:rgb(153, 153, 153); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursor { border-left:1px solid rgb(51, 51, 51); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors .CodeMirror-cursor { border-left:1px solid rgb(51, 51, 51); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-selected { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-focused .CodeMirror-selected { background:rgba(181, 214, 252, 0.37); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line::selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span::selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span > span::selection { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line::-moz-selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span::-moz-selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span > span::-moz-selection { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors { visibility:hidden; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursor { visibility:visible; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors .CodeMirror-cursor { visibility:visible; }
+#write .md-fences.mock-cm.md-fences-with-lineno { color:rgb(51, 51, 51); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-gutters { background:rgb(248, 248, 248); border-right:1px solid rgb(221, 221, 221); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-linenumber { color:rgb(153, 153, 153); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursor { border-left:1px solid rgb(51, 51, 51); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors .CodeMirror-cursor { border-left:1px solid rgb(51, 51, 51); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-selected { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-focused .CodeMirror-selected { background:rgba(181, 214, 252, 0.37); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line::selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span::selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span > span::selection { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line::-moz-selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span::-moz-selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span > span::-moz-selection { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors { visibility:hidden; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursor { visibility:visible; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors .CodeMirror-cursor { visibility:visible; }
+#write .md-fences.mock-cm.md-fences-with-lineno { color:rgb(51, 51, 51); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-gutters { background:rgb(248, 248, 248); border-right:1px solid rgb(221, 221, 221); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-linenumber { color:rgb(153, 153, 153); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursor { border-left:1px solid rgb(51, 51, 51); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors .CodeMirror-cursor { border-left:1px solid rgb(51, 51, 51); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-selected { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-focused .CodeMirror-selected { background:rgba(181, 214, 252, 0.37); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line::selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span::selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span > span::selection { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line::-moz-selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span::-moz-selection, #write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-line > span > span::-moz-selection { background:rgba(181, 214, 252, 0.17); }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors { visibility:hidden; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursor { visibility:visible; }
+#write .md-fences.mock-cm.md-fences-with-lineno .CodeMirror-cursors .CodeMirror-cursor { visibility:visible; }
+:root {
+    --side-bar-bg-color: #fafafa;
+    --control-text-color: #777;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
+    color: rgb(51, 51, 51);
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 30px;
+    padding-bottom: 100px;
+}
+
+@media only screen and (min-width: 1400px) {
+    #write {
+        max-width: 1024px;
+    }
+}
+
+@media only screen and (min-width: 1800px) {
+    #write {
+        max-width: 1200px;
+    }
+}
+
+#write > ul:first-child,
+#write > ol:first-child {
+    margin-top: 30px;
+}
+
+a {
+    color: #4183C4;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    line-height: 1.4;
+    cursor: text;
+}
+
+h1 {
+    font-size: 2.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #eee;
+}
+
+h2 {
+    font-size: 1.75em;
+    line-height: 1.225;
+    border-bottom: 1px solid #eee;
+}
+
+h3 {
+    font-size: 1.5em;
+    line-height: 1.43;
+}
+
+h4 {
+    font-size: 1.25em;
+}
+
+h5 {
+    font-size: 1em;
+}
+
+h6 {
+    font-size: 1em;
+    color: #777;
+}
+
+p, blockquote, ul, ol, dl, table {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+}
+
+li > ol, li > ul {
+    margin-top: 0;
+}
+
+hr {
+    height: 2px;
+    padding: 0;
+    margin: 16px 0;
+    background-color: #e7e7e7;
+    border: 0 none;
+    overflow: hidden;
+    box-sizing: content-box;
+}
+
+body > h2:first-child {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+body > h1:first-child {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+    margin-top: 0;
+}
+
+li p.first {
+    display: inline-block;
+}
+
+ul, ol {
+    padding-left: 30px;
+}
+
+ul:first-child, ol:first-child {
+    margin-top: 0;
+}
+
+ul:last-child, ol:last-child {
+    margin-bottom: 0;
+}
+
+blockquote {
+    border-left: 4px solid #dddddd;
+    padding: 0 15px;
+    color: #777777;
+}
+
+blockquote blockquote {
+    padding-right: 0;
+}
+
+table {
+    padding: 0;
+    word-break: initial;
+}
+
+table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
+table tr:nth-child(2n) {
+    background-color: #f8f8f8;
+}
+
+table tr th {
+    font-weight: bold;
+    border: 1px solid #cccccc;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr td {
+    border: 1px solid #cccccc;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr th:first-child, table tr td:first-child {
+    margin-top: 0;
+}
+
+table tr th:last-child, table tr td:last-child {
+    margin-bottom: 0;
+}
+
+.code, code, pre {
+    font-family: 'Consolas', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+}
+
+code {
+    background-color: #f7f7f7;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    color: #d14;
+}
+
+pre {
+    background-color: #f7f7f7;
+    padding: 16px;
+    border-radius: 3px;
+    overflow: auto;
+    line-height: 1.45;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    border-radius: 0;
+}
+
+pre.md-fences {
+    padding: 16px;
+    background-color: #f7f7f7;
+    border-radius: 3px;
+    -webkit-font-smoothing: initial;
+    margin: 0;
+    margin-bottom: 1.2em;
+}
+
+.md-fences {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding: 0.2em 1em;
+    border-radius: 3px;
+    color: inherit;
+    font-size: 0.9em;
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    font-family: 'Consolas', 'Menlo', 'Ubuntu Mono', monospace;
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre;
+}
+
+/* ===== 目录样式 ===== */
+.toc-container {
+    position: fixed;
+    right: 20px;
+    top: 80px;
+    width: 220px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.toc-container h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #5a67d8;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.toc-item {
+    margin: 3px 0;
+}
+
+.toc-item a {
+    display: block;
+    text-decoration: none;
+    color: #4a5568;
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.toc-item a:hover {
+    color: #5a67d8;
+    background-color: #e2e8f0;
+    transform: translateX(2px);
+}
+
+.toc-level-1 { padding-left: 0; }
+.toc-level-2 { padding-left: 15px; }
+.toc-level-3 { padding-left: 30px; }
+.toc-level-4 { padding-left: 45px; }
+.toc-level-5 { padding-left: 60px; }
+.toc-level-6 { padding-left: 75px; }
+
+.content-container.has-toc {
+    margin-right: 260px;
+}
+
+/* ===== Typora特有的样式细节 ===== */
+.task-list-item {
+    list-style-type: none;
+    margin-left: 0;
+}
+
+.task-list-item-checkbox {
+    margin-right: 8px;
+    margin-left: -20px;
+    pointer-events: none;
+}
+
+.md-fences {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 8px 12px;
+    margin: 1em 0;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9em;
+    line-height: 1.45;
+}
+
+.md-image {
+    text-align: center;
+    display: block;
+    margin: 1.2em auto;
+}
+
+.md-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* 脚注样式 */
+.footnotes {
+    margin-top: 2em;
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.footnote-line {
+    margin: 0.5em 0;
+}
+
+/* 链接样式 */
+a:hover {
+    text-decoration: underline;
+}
+
+/* 代码块增强 */
+.md-fences code {
+    background: none;
+    padding: 0;
+    color: inherit;
+    font-family: inherit;
+}
+
+/* 表格增强 */
+table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    overflow-x: auto;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f8f8f8;
+    font-weight: 600;
+}
+
+table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* 引用块增强 */
+blockquote {
+    border-left: 4px solid #ddd;
+    padding: 0 1em;
+    color: #666;
+    margin: 1em 0;
+}
+
+blockquote > :first-child {
+    margin-top: 0;
+}
+
+blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* 标题锚点 */
+h1:hover a.anchor,
+h2:hover a.anchor,
+h3:hover a.anchor,
+h4:hover a.anchor,
+h5:hover a.anchor,
+h6:hover a.anchor {
+    opacity: 1;
+}
+
+a.anchor {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    text-decoration: none;
+    margin-left: 8px;
+    color: #999;
+}
     </style>
 </head>
-<body>
+<body class="typora-export">
+    <div id="write">
+        <h1>${title}</h1>
+        ${content}
+    </div>
+
     ${toc ? `
     <div class="toc-container">
         <h3>目录</h3>
         ${toc}
     </div>
     ` : ''}
-    
-    <div class="content-container">
-        <h1>${title}</h1>
-        ${content}
-    </div>
 </body>
 </html>`;
     }
@@ -1606,17 +2192,96 @@ export default class PluginSample extends Plugin {
     }
 
     /**
-     * 改进的Markdown转HTML转换
+     * 处理列表（支持嵌套列表）
+     */
+    private processLists(html: string): string {
+        const lines = html.split('\n');
+        const result: string[] = [];
+        const stack: { type: 'ul' | 'ol', level: number }[] = [];
+
+        for (const line of lines) {
+            // 检查是否是无序列表
+            const ulMatch = line.match(/^(\s*)[\*\-\+]\s+(.+)$/);
+            if (ulMatch) {
+                const indent = ulMatch[1].length;
+                const content = ulMatch[2];
+                const level = Math.floor(indent / 2);
+
+                // 关闭层级较高的列表
+                while (stack.length > 0 && stack[stack.length - 1].level >= level) {
+                    const closed = stack.pop();
+                    result.push(`</${closed?.type}>`);
+                }
+
+                // 打开新的列表（如果需要）
+                if (stack.length === 0 || stack[stack.length - 1].level < level) {
+                    result.push('<ul>');
+                    stack.push({ type: 'ul', level });
+                }
+
+                result.push(`<li>${content}</li>`);
+                continue;
+            }
+
+            // 检查是否是有序列表
+            const olMatch = line.match(/^(\s*)\d+\.\s+(.+)$/);
+            if (olMatch) {
+                const indent = olMatch[1].length;
+                const content = olMatch[2];
+                const level = Math.floor(indent / 2);
+
+                // 关闭层级较高的列表
+                while (stack.length > 0 && stack[stack.length - 1].level >= level) {
+                    const closed = stack.pop();
+                    result.push(`</${closed?.type}>`);
+                }
+
+                // 打开新的列表（如果需要）
+                if (stack.length === 0 || stack[stack.length - 1].level < level) {
+                    result.push('<ol>');
+                    stack.push({ type: 'ol', level });
+                }
+
+                result.push(`<li>${content}</li>`);
+                continue;
+            }
+
+            // 关闭所有列表
+            while (stack.length > 0) {
+                const closed = stack.pop();
+                result.push(`</${closed?.type}>`);
+            }
+
+            result.push(line);
+        }
+
+        // 确保所有列表都关闭
+        while (stack.length > 0) {
+            const closed = stack.pop();
+            result.push(`</${closed?.type}>`);
+        }
+
+        return result.join('\n');
+    }
+
+    /**
+     * 改进的Markdown转HTML转换（Typora风格）
      */
     private improvedMarkdownToHTML(markdown: string): string {
         console.log("Starting improved Markdown to HTML conversion");
         console.log("Input markdown length:", markdown.length);
-        
+
         // 更完整的Markdown转换
         let html = markdown;
 
         // 处理代码块（优先处理，避免与其他格式冲突）
-        html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+        html = html.replace(/```([^\n]*)\n([\s\S]*?)```/g, (match, language, code) => {
+            const lang = language.trim() || 'text';
+            return `<pre class="md-fences md-fences-with-lineno mock-cm md-end-block" lang="${lang}" contenteditable="true" spellcheck="false">${code.trim()}</pre>`;
+        });
+
+        // 处理行内代码
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
 
         // 处理标题
         html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
@@ -1634,20 +2299,47 @@ export default class PluginSample extends Plugin {
         html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
         html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
 
-        // 处理行内代码
-        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+        // 处理删除线
+        html = html.replace(/~~(.*?)~~/g, '<del>$1</del>');
 
         // 处理引用块
         html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
 
-        // 处理列表
-        html = html.replace(/^\* (.*$)/gim, '<ul><li>$1</li></ul>');
-        html = html.replace(/^- (.*$)/gim, '<ul><li>$1</li></ul>');
-        html = html.replace(/^\d+\. (.*$)/gim, '<ol><li>$1</li></ol>');
+        // 处理多行引用块
+        html = html.replace(/<blockquote>(.*?)<\/blockquote>\s*<blockquote>(.*?)<\/blockquote>/gs, '<blockquote>$1 $2</blockquote>');
 
-        // 清理列表标签
-        html = html.replace(/<\/ul>\s*<ul[^>]*>/g, '');
-        html = html.replace(/<\/ol>\s*<ol[^>]*>/g, '');
+        // 处理表格
+        html = html.replace(/\|(.+)\|\n\|[- :|]+\|\n((?:\|.+\|\n)+)/g, (match, header, body) => {
+            const headers = header.split('|').filter(h => h.trim()).map(h => h.trim());
+            const rows = body.trim().split('\n').map(row =>
+                row.split('|').filter(cell => cell.trim()).map(cell => cell.trim())
+            );
+
+            let tableHTML = '<table><thead><tr>';
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            rows.forEach(row => {
+                if (row.length > 0) {
+                    tableHTML += '<tr>';
+                    row.forEach(cell => {
+                        tableHTML += `<td>${cell}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                }
+            });
+            tableHTML += '</tbody></table>';
+            return tableHTML;
+        });
+
+        // 改进的列表处理
+        html = this.processLists(html);
+
+        // 处理水平线
+        html = html.replace(/^[-*]{3,}$/gm, '<hr>');
+        html = html.replace(/^_{3,}$/gm, '<hr>');
 
         // 调试：在处理前检查图片格式
         const beforeImages = html.match(/!\[[^\]]*\]\([^)]+\)/g);
@@ -1663,7 +2355,7 @@ export default class PluginSample extends Plugin {
         html = html.replace(base64Regex, (match, alt, src) => {
             base64Matches++;
             console.log(`Converting base64 image ${base64Matches}: alt="${alt}", src length=${src.length}`);
-            return `<img src="${src}" alt="${alt}" style="max-width: 100%; height: auto; display: block; margin: 10px 0;">`;
+            return `<span class="md-image"><img src="${src}" alt="${alt}"></span>`;
         });
 
         // 然后处理普通图片
@@ -1672,7 +2364,7 @@ export default class PluginSample extends Plugin {
         html = html.replace(normalImageRegex, (match, alt, src) => {
             normalMatches++;
             console.log(`Converting normal image ${normalMatches}: alt="${alt}", src="${src}"`);
-            return `<img src="${src}" alt="${alt}" style="max-width: 100%; height: auto; display: block; margin: 10px 0;">`;
+            return `<span class="md-image"><img src="${src}" alt="${alt}"></span>`;
         });
 
         // 特殊处理：如果仍然有未转换的图片模式，尝试更宽松的正则表达式
@@ -1688,9 +2380,9 @@ export default class PluginSample extends Plugin {
 
             // 检查是否是base64图片
             if (src.startsWith('data:image/')) {
-                return `<img src="${src}" alt="${alt}" style="max-width: 100%; height: auto; display: block; margin: 10px 0;">`;
+                return `<span class="md-image"><img src="${src}" alt="${alt}"></span>`;
             } else {
-                return `<img src="${src}" alt="${alt}" style="max-width: 100%; height: auto; display: block; margin: 10px 0;">`;
+                return `<span class="md-image"><img src="${src}" alt="${alt}"></span>`;
             }
         });
 
@@ -1699,25 +2391,31 @@ export default class PluginSample extends Plugin {
         // 处理链接（必须在图片处理之后）
         html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 
-        // 处理换行和段落
-        // 先处理段落分隔
-        const paragraphs = html.split(/\n\n+/);
-        html = paragraphs.map(paragraph => {
-            // 清理段落中的多余换行
-            const cleanParagraph = paragraph.replace(/\n/g, ' ').trim();
-            if (cleanParagraph) {
-                // 如果段落已经包含HTML标签，不再包装
-                if (cleanParagraph.startsWith('<')) {
-                    return cleanParagraph;
-                } else {
-                    return `<p>${cleanParagraph}</p>`;
-                }
-            }
-            return '';
-        }).filter(p => p).join('\n');
+        // 处理任务列表
+        html = html.replace(/^[\s]*- \[ \]\s+(.*$)/gim, '<ul><li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="">$1</li></ul>');
+        html = html.replace(/^[\s]*- \[x\]\s+(.*$)/gim, '<ul><li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" checked="" disabled="">$1</li></ul>');
 
-        // 处理剩余的单个换行（转换为br标签）
-        html = html.replace(/([^>])\n([^<])/g, '$1<br>$2');
+        // 处理换行和段落（Typora风格）
+        html = html.replace(/\n\n+/g, '</p><p>');
+        html = html.replace(/\n/g, '<br>');
+
+        // 包装段落
+        html = html.split('<br><br>').map(section => {
+            section = section.trim();
+            if (section && !section.startsWith('<')) {
+                return `<p>${section}</p>`;
+            }
+            return section;
+        }).join('<br><br>');
+
+        // 清理多余的<br>标签在HTML元素周围
+        html = html.replace(/<br>\s*<(h[1-6]|ul|ol|blockquote|pre|table|hr)/gi, '<$1');
+        html = html.replace(/<\/(h[1-6]|ul|ol|blockquote|pre|table|hr)>\s*<br>/gi, '</$1>');
+
+        // 确保整个内容被段落包装
+        if (!html.includes('<p>') && !html.startsWith('<')) {
+            html = `<p>${html}</p>`;
+        }
 
         // 调试：检查最终HTML
         const finalImages = html.match(/<img[^>]*>/g);
