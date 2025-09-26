@@ -10,5 +10,15 @@
   "removedData": "数据已删除",
   "confirmRemove": "确认删除 ${name} 中的数据？",
   "insertEmoji": "插入表情",
-  "removeSpace": "移除空格"
+  "removeSpace": "移除空格",
+  "exportHTML": "导出为HTML",
+  "exporting": "导出中...",
+  "exportSuccess": "HTML导出完成",
+  "exportError": "导出失败",
+  "selectDocument": "请先选择文档",
+  "exportOptions": "导出选项",
+  "includeImages": "包含图片（Base64格式）",
+  "generateTOC": "生成目录",
+  "exportCurrentDoc": "导出当前文档",
+  "exportEntireNotebook": "导出整个笔记本"
 }

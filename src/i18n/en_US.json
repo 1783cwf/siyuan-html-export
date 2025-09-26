@@ -10,5 +10,15 @@
   "removedData": "Data deleted",
   "confirmRemove": "Confirm to delete the data in ${name}?",
   "insertEmoji": "Insert Emoji",
-  "removeSpace": "Remove Space"
+  "removeSpace": "Remove Space",
+  "exportHTML": "Export to HTML",
+  "exporting": "Exporting...",
+  "exportSuccess": "HTML export completed",
+  "exportError": "Export failed",
+  "selectDocument": "Please select a document first",
+  "exportOptions": "Export Options",
+  "includeImages": "Include images as base64",
+  "generateTOC": "Generate table of contents",
+  "exportCurrentDoc": "Export current document",
+  "exportEntireNotebook": "Export entire notebook"
 }

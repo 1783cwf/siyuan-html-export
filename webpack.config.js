@@ -10,7 +10,7 @@ module.exports = (env, argv) => {
     const isPro = argv.mode === "production";
     const plugins = [
         new MiniCssExtractPlugin({
-            filename: isPro ? "dist/index.css" : "index.css",
+            filename: isPro ? "html-export/index.css" : "index.css",
         })
     ];
     let entry = {
@@ -18,7 +18,7 @@ module.exports = (env, argv) => {
     };
     if (isPro) {
         entry = {
-            "dist/index": "./src/index.ts",
+            "html-export/index": "./src/index.ts",
         };
         plugins.push(new webpack.BannerPlugin({
             banner: () => {
@@ -27,19 +27,19 @@ module.exports = (env, argv) => {
         }));
         plugins.push(new CopyPlugin({
             patterns: [
-                {from: "preview.png", to: "./dist/"},
-                {from: "icon.png", to: "./dist/"},
-                {from: "README*.md", to: "./dist/"},
-                {from: "plugin.json", to: "./dist/"},
-                {from: "src/i18n/", to: "./dist/i18n/"},
+                {from: "preview.png", to: "./html-export/"},
+                {from: "icon.png", to: "./html-export/"},
+                {from: "README*.md", to: "./html-export/"},
+                {from: "plugin.json", to: "./html-export/"},
+                {from: "src/i18n/", to: "./html-export/i18n/"},
             ],
         }));
         plugins.push(new ZipPlugin({
             filename: "package.zip",
             algorithm: "gzip",
-            include: [/dist/],
+            include: [/html-export/],
             pathMapper: (assetPath) => {
-                return assetPath.replace("dist/", "");
+                return assetPath.replace("html-export/", "");
             },
         }));
     } else {
