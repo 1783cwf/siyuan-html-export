@@ -1484,7 +1484,11 @@ export default class PluginSample extends Plugin {
      */
     private generateFullHTML(content: string, generateTOC: boolean): string {
         const title = this.getDocumentTitle();
+        this.processedHtmlContent = content; // 重置处理后的内容
         const toc = generateTOC ? this.generateTableOfContents(content) : '';
+
+        // 使用处理后的内容（如果生成了目录）
+        const finalContent = generateTOC && this.processedHtmlContent ? this.processedHtmlContent : content;
 
         return `<!doctype html>
 <html>
@@ -1729,7 +1733,7 @@ html {
 }
 
 body {
-    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: rgb(51, 51, 51);
     line-height: 1.6;
 }
@@ -1968,7 +1972,7 @@ pre.md-fences {
 /* ===== 目录样式 ===== */
 .toc-container {
     position: fixed;
-    right: 20px;
+    left: 20px;
     top: 80px;
     width: 220px;
     background: #f8f9fa;
@@ -2006,7 +2010,6 @@ pre.md-fences {
 .toc-item a:hover {
     color: #5a67d8;
     background-color: #e2e8f0;
-    transform: translateX(2px);
 }
 
 .toc-level-1 { padding-left: 0; }
@@ -2017,7 +2020,7 @@ pre.md-fences {
 .toc-level-6 { padding-left: 75px; }
 
 .content-container.has-toc {
-    margin-right: 260px;
+    margin-left: 260px;
 }
 
 /* ===== Typora特有的样式细节 ===== */
@@ -2083,6 +2086,38 @@ a:hover {
     font-family: inherit;
 }
 
+/* 代码块复制按钮 */
+.md-fences {
+    position: relative;
+}
+
+.md-fences::before {
+    content: "复制";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #5a67d8;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.md-fences:hover::before {
+    opacity: 1;
+}
+
+.md-fences.copied::before {
+    content: "已复制";
+    background: #48bb78;
+    opacity: 1;
+}
+
 /* 表格增强 */
 table {
     border-collapse: collapse;
@@ -2143,7 +2178,7 @@ a.anchor {
 <body class="typora-export">
     <div id="write">
         <h1>${title}</h1>
-        ${content}
+        ${finalContent}
     </div>
 
     ${toc ? `
@@ -2152,6 +2187,57 @@ a.anchor {
         ${toc}
     </div>
     ` : ''}
+
+<script>
+// 代码块复制功能
+document.addEventListener('DOMContentLoaded', function() {
+    const codeBlocks = document.querySelectorAll('.md-fences');
+
+    codeBlocks.forEach(block => {
+        // 为每个代码块添加复制按钮
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = '复制';
+        copyBtn.style.cssText = 'position: absolute; top: 8px; right: 8px; background: #5a67d8; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; opacity: 0; transition: opacity 0.2s ease; z-index: 10;';
+
+        block.appendChild(copyBtn);
+
+        // 鼠标悬停显示按钮
+        block.addEventListener('mouseenter', () => {
+            copyBtn.style.opacity = '1';
+        });
+
+        block.addEventListener('mouseleave', () => {
+            copyBtn.style.opacity = '0';
+        });
+
+        // 点击复制功能
+        copyBtn.addEventListener('click', async () => {
+            try {
+                const codeText = block.textContent || '';
+                await navigator.clipboard.writeText(codeText.trim());
+
+                copyBtn.textContent = '已复制';
+                copyBtn.style.background = '#48bb78';
+
+                setTimeout(() => {
+                    copyBtn.textContent = '复制';
+                    copyBtn.style.background = '#5a67d8';
+                }, 2000);
+            } catch (err) {
+                console.error('复制失败:', err);
+                copyBtn.textContent = '复制失败';
+                copyBtn.style.background = '#f56565';
+
+                setTimeout(() => {
+                    copyBtn.textContent = '复制';
+                    copyBtn.style.background = '#5a67d8';
+                }, 2000);
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>`;
     }
@@ -2160,21 +2246,34 @@ a.anchor {
      * 生成目录
      */
     private generateTableOfContents(htmlContent: string): string {
-        // 提取标题元素生成目录
+        // 提取标题元素生成目录，并为每个标题添加ID
         const headingRegex = /<h([1-6])[^>]*>(.*?)<\/h[1-6]>/gi;
         const headings: Array<{level: number, text: string, id: string}> = [];
         let match;
+        let processedContent = htmlContent;
 
         while ((match = headingRegex.exec(htmlContent)) !== null) {
             const level = parseInt(match[1]);
             const text = match[2].replace(/<[^>]*>/g, ''); // 移除HTML标签
             const id = `heading-${headings.length}`;
+            const headingTag = `h${level}`;
+
+            // 为标题添加ID属性
+            const originalHeading = match[0];
+            const headingWithId = originalHeading.replace(/<h([1-6])/, `<h$1 id="${id}"`);
+            processedContent = processedContent.replace(originalHeading, headingWithId);
 
             headings.push({
                 level,
                 text,
                 id
             });
+        }
+
+        // 更新HTML内容以包含标题ID
+        if (headings.length > 0) {
+            // 将处理后的内容返回给调用者
+            this.processedHtmlContent = processedContent;
         }
 
         if (headings.length === 0) {
@@ -2184,12 +2283,17 @@ a.anchor {
         let tocHTML = '';
         headings.forEach(heading => {
             tocHTML += `<div class="toc-item toc-level-${heading.level}">
-                <a href="#${heading.id}">${heading.text}</a>
+                <a href="#${heading.id}" onclick="document.getElementById('${heading.id}').scrollIntoView({behavior: 'smooth'}); return false;">${heading.text}</a>
             </div>`;
         });
 
         return tocHTML;
     }
+
+    /**
+     * 存储处理后的HTML内容
+     */
+    private processedHtmlContent: string = '';
 
     /**
      * 处理列表（支持嵌套列表）
